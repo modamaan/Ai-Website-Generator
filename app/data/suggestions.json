@@ -1,0 +1,22 @@
+[
+    {
+        "label": "Dashboard",
+        "prompt": "Create a modern dashboard with analytics cards, charts, and a sidebar navigation. Include metrics for user activity, revenue, and performance indicators.",
+        "icon": "LayoutDashboard"
+    },
+    {
+        "label": "SignUp Form",
+        "prompt": "Design a clean signup form with email, password, and confirm password fields. Include social login options and form validation.",
+        "icon": "UserPlus"
+    },
+    {
+        "label": "Hero",
+        "prompt": "Create a hero section with a bold headline, compelling subheading, call-to-action button, and background image or gradient.",
+        "icon": "Home"
+    },
+    {
+        "label": "User Profile Card",
+        "prompt": "Design a user profile card showing avatar, name, bio, stats (followers, following, posts), and action buttons.",
+        "icon": "User"
+    }
+]
