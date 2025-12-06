@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import { useUser, SignInButton } from '@clerk/nextjs';
-import { Image as ImageIcon, ArrowUp, LayoutDashboard, UserPlus, Home, User } from 'lucide-react';
+import { Image as ImageIcon, ArrowUp, LayoutDashboard, UserPlus, Home, User, Loader2 } from 'lucide-react';
 import suggestions from '@/app/data/suggestions.json';
-
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 // Icon mapping
 const iconMap = {
   LayoutDashboard,
@@ -15,7 +18,34 @@ const iconMap = {
 
 export default function Hero() {
   const [prompt, setPrompt] = useState('');
+  const [loading, setLoading] = useState(false);
   const { isSignedIn, user } = useUser();
+  const router = useRouter();
+
+  const CreateNewProject = async () => {
+    setLoading(true);
+    const projectId = uuidv4();
+    const frameId = generateRandomFrameNumber();
+    const messages = [{
+      role: "user",
+      content: prompt,
+    }]
+    try {
+      const response = await axios.post('/api/projects', {
+        projectId: projectId,
+        frameId: frameId,
+        messages: messages,
+      });
+      console.log('Project API Response:', response.data);
+      toast.success('Project created successfully');
+      router.push(`/playground/${projectId}?frameId=${frameId}`);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      toast.error('Error creating project');
+      setLoading(false);
+    }
+  };
 
   const handleSuggestionClick = (suggestionPrompt: string) => {
     setPrompt(suggestionPrompt);
@@ -44,6 +74,7 @@ export default function Hero() {
           placeholder="Describe your page design"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          disabled={loading}
         />
         <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4">
           <button className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
@@ -65,14 +96,18 @@ export default function Hero() {
             </SignInButton>
           ) : (
             <button
-              onClick={handleSubmit}
-              className={`p-2 sm:p-2.5 rounded-full transition-colors ${prompt.trim()
-                ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
-                : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
+              onClick={CreateNewProject}
+              className={`p-2 sm:p-2.5 rounded-full transition-colors ${prompt.trim() && !loading
+                  ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
+                  : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
                 }`}
-              disabled={!prompt.trim()}
+              disabled={!prompt.trim() || loading}
             >
-              <ArrowUp className="w-4 h-4" />
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ArrowUp className="w-4 h-4" />
+              )}
             </button>
           )}
         </div>
@@ -108,3 +143,7 @@ function PresetButton({ icon, label, prompt, onClick }: { icon: React.ReactNode;
     </button>
   );
 }
+
+const generateRandomFrameNumber = () => {
+  return Math.floor(Math.random() * 1000000);
+};
