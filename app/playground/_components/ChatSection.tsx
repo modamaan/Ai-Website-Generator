@@ -7,11 +7,11 @@ type Props = {
   messages: ChatMessage[]
   onClose?: () => void
   onSend: any
+  loading?: boolean
 }
 
-const ChatSection = ({ messages, onClose, onSend }: Props) => {
+const ChatSection = ({ messages, onClose, onSend, loading = false }: Props) => {
   const [input, setInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -95,13 +95,16 @@ const ChatSection = ({ messages, onClose, onSend }: Props) => {
             </div>
           ))
         )}
-        {isTyping && (
+        {loading && (
           <div className='flex justify-start'>
             <div className='bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-sm'>
-              <div className='flex gap-1'>
-                <div className='w-2 h-2 bg-slate-400 rounded-full animate-bounce' style={{ animationDelay: '0ms' }}></div>
-                <div className='w-2 h-2 bg-slate-400 rounded-full animate-bounce' style={{ animationDelay: '150ms' }}></div>
-                <div className='w-2 h-2 bg-slate-400 rounded-full animate-bounce' style={{ animationDelay: '300ms' }}></div>
+              <div className='flex items-center gap-2'>
+                <div className='flex gap-1'>
+                  <div className='w-2 h-2 bg-purple-400 rounded-full animate-bounce' style={{ animationDelay: '0ms' }}></div>
+                  <div className='w-2 h-2 bg-purple-400 rounded-full animate-bounce' style={{ animationDelay: '150ms' }}></div>
+                  <div className='w-2 h-2 bg-purple-400 rounded-full animate-bounce' style={{ animationDelay: '300ms' }}></div>
+                </div>
+                <span className='text-xs text-slate-500'>AI is thinking...</span>
               </div>
             </div>
           </div>
@@ -130,13 +133,14 @@ const ChatSection = ({ messages, onClose, onSend }: Props) => {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder='Describe what you want to build...'
-            className='w-full px-3 lg:px-4 py-2 lg:py-3 pr-11 lg:pr-12 rounded-xl border border-slate-300 focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none resize-none text-sm placeholder:text-slate-400 transition-all'
+            disabled={loading}
+            className='w-full px-3 lg:px-4 py-2 lg:py-3 pr-11 lg:pr-12 rounded-xl border border-slate-300 focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none resize-none text-sm placeholder:text-slate-400 transition-all disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed'
             rows={2}
           />
           <button
             onClick={handleSend}
-            disabled={!input.trim()}
-            className='absolute right-2 bottom-2 w-7 h-7 lg:w-8 lg:h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-slate-300 disabled:to-slate-300 flex items-center justify-center transition-all shadow-lg disabled:shadow-none'
+            disabled={!input.trim() || loading}
+            className='absolute right-2 bottom-2 w-7 h-7 lg:w-8 lg:h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-slate-300 disabled:to-slate-300 flex items-center justify-center transition-all shadow-lg disabled:shadow-none disabled:cursor-not-allowed'
           >
             <Send className='w-3.5 h-3.5 lg:w-4 lg:h-4 text-white' />
           </button>

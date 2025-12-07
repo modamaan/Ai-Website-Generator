@@ -74,6 +74,7 @@ export async function POST(request: Request) {
             .values({
                 chatMessage: messages,
                 createdBy: userEmail,
+                frameId: frameId,
             })
             .returning();
 
