@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { SignInButton } from '@clerk/nextjs';
 
@@ -12,19 +13,7 @@ export default function Navbar() {
       <div className="flex items-center justify-between">
         {/* Left: Logo */}
         <div className="flex items-center flex-shrink-0">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-gray-800"
-          >
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-            <path d="M2 17L12 22L22 17" />
-            <path d="M2 12L12 17L22 12" />
-          </svg>
+          <Image src="/web-development.png" alt="Logo" width={48} height={48} className="w-8 h-8" />
         </div>
 
         {/* Center: Links - Hidden on mobile */}
