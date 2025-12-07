@@ -24,6 +24,24 @@ export type ChatMessage = {
     content: string;
 }
 
+export type SelectedElement = {
+    tagName: string;
+    textContent: string;
+    innerHTML: string;
+    styles: {
+        color: string;
+        backgroundColor: string;
+        fontSize: string;
+        fontWeight: string;
+        fontFamily: string;
+        padding: string;
+        margin: string;
+        textAlign: string;
+    };
+    classList: string[];
+    xpath: string;
+}
+
 const getSystemPrompt = (userInput: string) => `You are an expert web developer assistant. Analyze the user's input and respond accordingly.
 
 UserInput: ${userInput}
@@ -36,7 +54,37 @@ Instructions:
    - Generate a complete HTML Tailwind CSS code using Flowbite UI components.
    - Use a modern design with **blue as the primary color theme**.
    - Only include the <body> content (do not add <head> or <title>).
-   - Make it fully responsive for all screen sizes.
+   
+   **RESPONSIVE DESIGN REQUIREMENTS (CRITICAL):**
+   - Use a **mobile-first approach** - design for mobile screens first, then scale up.
+   - Use Tailwind CSS responsive prefixes for ALL layout elements:
+       • Default (no prefix) = mobile (< 640px)
+       • sm: = small tablets (≥ 640px)
+       • md: = tablets (≥ 768px)
+       • lg: = laptops (≥ 1024px)
+       • xl: = desktops (≥ 1280px)
+       • 2xl: = large screens (≥ 1536px)
+   - **Navigation:** Use hamburger menu (hidden on mobile, visible on md:) for mobile devices.
+   - **Grid Layouts:** Always use responsive grid classes:
+       • grid-cols-1 (mobile)
+       • sm:grid-cols-2 (small tablets)
+       • md:grid-cols-2 or md:grid-cols-3 (tablets)
+       • lg:grid-cols-3 or lg:grid-cols-4 (laptops+)
+   - **Flexbox:** Use flex-col on mobile, then md:flex-row for larger screens.
+   - **Text Sizes:** Scale typography responsively:
+       • text-2xl md:text-3xl lg:text-4xl xl:text-5xl (headings)
+       • text-sm md:text-base lg:text-lg (body text)
+   - **Spacing:** Use responsive padding and margins:
+       • px-4 md:px-8 lg:px-12 xl:px-16 (horizontal padding)
+       • py-8 md:py-12 lg:py-16 xl:py-20 (vertical padding)
+       • gap-4 md:gap-6 lg:gap-8 (grid/flex gaps)
+   - **Images:** Make all images responsive with w-full h-auto and object-cover/contain.
+   - **Containers:** Use max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 for content containers.
+   - **Hidden/Visible Elements:** Use hidden md:block or block md:hidden for device-specific content.
+   - **Touch Targets:** Ensure buttons and clickable elements are at least 44x44px on mobile.
+   - **Tables:** Make tables responsive with overflow-x-auto wrapper on mobile.
+   - **Forms:** Stack form fields vertically on mobile (flex-col), horizontally on larger screens (md:flex-row).
+   
    - All primary components must match the theme color.
    - Add proper padding and margin for each element.
    - Components should be independent; do not connect them.
@@ -85,6 +133,8 @@ const PlayGround = () => {
     const [messages, setMessages] = useState<ChatMessage[]>([])
     const [generatedCode, setGeneratedCode] = useState<string>("")
     const [initialMessageProcessed, setInitialMessageProcessed] = useState(false)
+    const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null)
+    const [isEditMode, setIsEditMode] = useState(false)
 
     useEffect(() => {
         GetFrameDetails()
@@ -263,6 +313,99 @@ const PlayGround = () => {
         }
     }
 
+    // Handler for element selection from iframe
+    const handleElementSelect = (element: SelectedElement) => {
+        setSelectedElement(element);
+    }
+
+    // Handler for updating element styles
+    const handleUpdateStyle = (property: string, value: string) => {
+        if (!selectedElement) return;
+
+        // Update local state
+        setSelectedElement(prev => prev ? {
+            ...prev,
+            styles: { ...prev.styles, [property]: value }
+        } : null);
+
+        // Send message to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_STYLE',
+                property,
+                value
+            }, '*');
+        }
+    }
+
+    // Handler for updating element text
+    const handleUpdateText = (text: string) => {
+        if (!selectedElement) return;
+
+        // Update local state
+        setSelectedElement(prev => prev ? {
+            ...prev,
+            textContent: text
+        } : null);
+
+        // Send message to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_TEXT',
+                text
+            }, '*');
+        }
+    }
+
+    // Handler for toggling edit mode
+    const handleToggleEditMode = () => {
+        setIsEditMode(!isEditMode);
+        if (isEditMode) {
+            // Exiting edit mode, deselect element
+            setSelectedElement(null);
+        }
+    }
+
+    // Handler for saving changes to database
+    const handleSaveChanges = async () => {
+        try {
+            // Get the modified HTML from the iframe
+            const iframe = document.querySelector('iframe');
+            const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+
+            if (iframeDoc && iframeDoc.body) {
+                // Extract only the body content (without our injected scripts and styles)
+                const modifiedHTML = iframeDoc.body.innerHTML;
+
+                // Remove editor-specific classes and attributes
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = modifiedHTML;
+
+                // Remove editor classes
+                const allElements = tempDiv.querySelectorAll('*');
+                allElements.forEach(el => {
+                    el.classList.remove('editor-hover', 'editor-selected');
+                    el.removeAttribute('data-element-tag');
+                });
+
+                const cleanedHTML = tempDiv.innerHTML;
+
+                // Update the generatedCode state
+                setGeneratedCode(cleanedHTML);
+
+                // Save to database
+                await saveFrameData(messages, cleanedHTML);
+
+                console.log('✅ Changes saved successfully');
+            }
+        } catch (error) {
+            console.error('❌ Error saving changes:', error);
+            throw error;
+        }
+    }
+
     useEffect(() => {
         console.log(generatedCode)
     }, [generatedCode])
@@ -305,12 +448,25 @@ const PlayGround = () => {
 
                 {/* Website Design - Main Content */}
                 <div className='flex-1 min-w-0 overflow-hidden'>
-                    <WebsiteDesign generatedCode={generatedCode} />
+                    <WebsiteDesign
+                        generatedCode={generatedCode}
+                        isEditMode={isEditMode}
+                        onToggleEditMode={handleToggleEditMode}
+                        onElementSelect={handleElementSelect}
+                        selectedElement={selectedElement}
+                        onUpdateStyle={handleUpdateStyle}
+                        onUpdateText={handleUpdateText}
+                    />
                 </div>
 
                 {/* Element Settings - Hidden on mobile, shown on larger screens */}
                 <div className='hidden xl:block'>
-                    <ElementSettingSection />
+                    <ElementSettingSection
+                        selectedElement={selectedElement}
+                        onUpdateStyle={handleUpdateStyle}
+                        onUpdateText={handleUpdateText}
+                        onSaveChanges={handleSaveChanges}
+                    />
                 </div>
             </div>
         </div>
