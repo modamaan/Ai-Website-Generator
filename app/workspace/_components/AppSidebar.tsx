@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Sidebar,
     SidebarContent,
@@ -10,17 +10,74 @@ import {
     SidebarHeader,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, FileText, Loader2 } from "lucide-react"
 import { UserButton } from "@clerk/nextjs"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { useUserDetail } from "@/app/context/UserDetailContext"
+import { useRouter, usePathname } from "next/navigation"
+import axios from "axios"
+
+interface Frame {
+    id: number;
+    frameId: string;
+    designCode: string | null;
+    projectId: string;
+    createdOn: string;
+}
+
+interface Project {
+    id: number;
+    projectId: string;
+    createdBy: string;
+    createdOn: string;
+    frame: Frame | null;
+    firstPrompt?: string | null;
+}
 
 const AppSidebar = () => {
     const { userDetail } = useUserDetail();
     const userCredits = userDetail?.credits ?? 0;
     const maxCredits = 2;
     const creditPercentage = (userCredits / maxCredits) * 100;
+
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    const fetchProjects = async () => {
+        try {
+            const response = await axios.get('/api/projects');
+            if (response.data.success) {
+                setProjects(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleProjectClick = (project: Project) => {
+        if (project.frame) {
+            router.push(`/playground/${project.projectId}?frameId=${project.frame.frameId}`);
+        }
+    };
+
+    const isActiveProject = (projectId: string) => {
+        return pathname.includes(projectId);
+    };
+
+    const truncatePrompt = (prompt: string | null | undefined, maxLength: number = 40) => {
+        if (!prompt) return "Untitled Project";
+        if (prompt.length <= maxLength) return prompt;
+        return prompt.substring(0, maxLength) + "...";
+    };
 
     return (
         <Sidebar>
@@ -52,8 +109,33 @@ const AppSidebar = () => {
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                    <div className='px-2 py-1 space-y-1'>
+                        {loading ? (
+                            <div className='flex justify-center items-center py-8'>
+                                <Loader2 className='w-5 h-5 animate-spin text-gray-400' />
+                            </div>
+                        ) : projects.length === 0 ? (
+                            <div className='text-center py-8 px-2'>
+                                <FileText className='w-8 h-8 mx-auto text-gray-300 mb-2' />
+                                <p className='text-xs text-gray-500'>No projects yet</p>
+                            </div>
+                        ) : (
+                            projects.map((project) => (
+                                <button
+                                    key={project.id}
+                                    onClick={() => handleProjectClick(project)}
+                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${isActiveProject(project.projectId)
+                                        ? 'bg-gray-200 text-gray-900 font-medium'
+                                        : 'text-gray-700 hover:bg-gray-100'
+                                        }`}
+                                >
+                                    <FileText className='w-4 h-4 flex-shrink-0' />
+                                    <span className='truncate'>{truncatePrompt(project.firstPrompt)}</span>
+                                </button>
+                            ))
+                        )}
+                    </div>
                 </SidebarGroup>
-                <SidebarGroup />
             </SidebarContent>
             <SidebarFooter>
                 <div className='p-3 sm:p-4 space-y-3'>

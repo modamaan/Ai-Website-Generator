@@ -181,6 +181,12 @@ export const getSelectionScript = () => `
           selectedElement.textContent = event.data.text;
         }
       }
+      
+      // Listen for attribute updates from parent (for images)
+      if (event.data.type === 'UPDATE_ATTRIBUTE' && selectedElement) {
+        console.log('🖼️ Updating attribute:', event.data.attribute, '=', event.data.value);
+        selectedElement.setAttribute(event.data.attribute, event.data.value);
+      }
     });
 
     console.log('✅ Selection script loaded and ready!');

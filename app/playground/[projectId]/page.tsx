@@ -5,10 +5,12 @@ import PlaygroundHeader from '../_components/PlaygroundHeader'
 import ChatSection from '../_components/ChatSection'
 import WebsiteDesign from '../_components/WebsiteDesign'
 import ElementSettingSection from '../_components/ElementSettingSection'
+import ImageSettingSection from '../_components/ImageSettingSection'
 import { useParams, useSearchParams } from 'next/navigation'
 import axios from 'axios'
 import { MessageSquare, X } from 'lucide-react'
 import { useUser } from '@clerk/nextjs'
+import { toast } from 'sonner'
 
 export type Frame = {
     id: number;
@@ -135,6 +137,7 @@ const PlayGround = () => {
     const [initialMessageProcessed, setInitialMessageProcessed] = useState(false)
     const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null)
     const [isEditMode, setIsEditMode] = useState(false)
+    const [isDeploying, setIsDeploying] = useState(false)
 
     useEffect(() => {
         GetFrameDetails()
@@ -359,12 +362,68 @@ const PlayGround = () => {
         }
     }
 
+    // Handler for updating image attributes (src, alt, etc.)
+    const handleUpdateAttribute = (attribute: string, value: string) => {
+        if (!selectedElement) return;
+
+        // Send message to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_ATTRIBUTE',
+                attribute,
+                value
+            }, '*');
+        }
+    }
+
     // Handler for toggling edit mode
     const handleToggleEditMode = () => {
         setIsEditMode(!isEditMode);
         if (isEditMode) {
             // Exiting edit mode, deselect element
             setSelectedElement(null);
+        }
+    }
+
+    // Handler for deploying to Vercel
+    const handleDeploy = async () => {
+        if (!generatedCode) {
+            toast.error('No website to deploy. Please generate a website first.');
+            return;
+        }
+
+        setIsDeploying(true);
+        toast.loading('Deploying to Vercel...', { id: 'deploy' });
+
+        try {
+            const response = await axios.post('/api/deploy', {
+                projectId,
+                frameId
+            });
+
+            if (response.data.success) {
+                toast.success(
+                    <div>
+                        <p>Deployment successful! 🎉</p>
+                        <a
+                            href={response.data.data.deploymentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                        >
+                            {response.data.data.deploymentUrl}
+                        </a>
+                    </div>,
+                    { id: 'deploy', duration: 10000 }
+                );
+            }
+        } catch (error: any) {
+            console.error('Deployment error:', error);
+            const errorMessage = error.response?.data?.error || 'Failed to deploy. Please try again.';
+            toast.error(errorMessage, { id: 'deploy' });
+        } finally {
+            setIsDeploying(false);
         }
     }
 
@@ -412,7 +471,10 @@ const PlayGround = () => {
 
     return (
         <div className='min-h-screen bg-slate-50'>
-            <PlaygroundHeader />
+            <PlaygroundHeader
+                onDeploy={handleDeploy}
+                isDeploying={isDeploying}
+            />
 
             {/* Mobile Chat Toggle Button */}
             <button
@@ -459,14 +521,22 @@ const PlayGround = () => {
                     />
                 </div>
 
-                {/* Element Settings - Hidden on mobile, shown on larger screens */}
+                {/* Element/Image Settings - Hidden on mobile, shown on larger screens */}
                 <div className='hidden xl:block'>
-                    <ElementSettingSection
-                        selectedElement={selectedElement}
-                        onUpdateStyle={handleUpdateStyle}
-                        onUpdateText={handleUpdateText}
-                        onSaveChanges={handleSaveChanges}
-                    />
+                    {selectedElement?.tagName.toLowerCase() === 'img' ? (
+                        <ImageSettingSection
+                            selectedEl={selectedElement as any}
+                            onUpdateStyle={handleUpdateStyle}
+                            onUpdateAttribute={handleUpdateAttribute}
+                        />
+                    ) : (
+                        <ElementSettingSection
+                            selectedElement={selectedElement}
+                            onUpdateStyle={handleUpdateStyle}
+                            onUpdateText={handleUpdateText}
+                            onSaveChanges={handleSaveChanges}
+                        />
+                    )}
                 </div>
             </div>
         </div>

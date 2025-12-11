@@ -2,10 +2,15 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Save } from 'lucide-react';
+import { Save, Rocket } from 'lucide-react';
 import Link from 'next/link';
 
-const PlaygroundHeader = () => {
+type Props = {
+    onDeploy?: () => void;
+    isDeploying?: boolean;
+};
+
+const PlaygroundHeader = ({ onDeploy, isDeploying = false }: Props) => {
     const handleSave = () => {
         // TODO: Implement save functionality
         console.log('Saving project...');
@@ -24,14 +29,29 @@ const PlaygroundHeader = () => {
                     </Link>
                 </div>
 
-                {/* Save Button */}
-                <button
-                    onClick={handleSave}
-                    className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-white bg-black rounded-lg hover:bg-zinc-800 transition-colors"
-                >
-                    <Save className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    <span className="hidden sm:inline">Save</span>
-                </button>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                    {/* Save Button */}
+                    <button
+                        onClick={handleSave}
+                        className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-white bg-black rounded-lg hover:bg-zinc-800 transition-colors"
+                    >
+                        <Save className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                        <span className="hidden sm:inline">Save</span>
+                    </button>
+
+                    {/* Deploy Button */}
+                    <button
+                        onClick={onDeploy}
+                        disabled={isDeploying}
+                        className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Rocket className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isDeploying ? 'animate-bounce' : ''}`} />
+                        <span className="hidden sm:inline">
+                            {isDeploying ? 'Deploying...' : 'Deploy'}
+                        </span>
+                    </button>
+                </div>
             </nav>
         </header>
     );

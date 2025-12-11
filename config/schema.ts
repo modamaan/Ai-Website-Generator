@@ -30,3 +30,17 @@ export const chatTable = pgTable("chats", {
   createdBy: varchar().references(() => usersTable.email),
   createdOn: timestamp().defaultNow(),
 });
+
+// User's deployed websites
+export const deployedSitesTable = pgTable("deployed_sites", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  siteId: varchar({ length: 100 }).notNull().unique(),
+  userId: varchar().references(() => usersTable.clerkId),
+  projectId: varchar().references(() => projectTable.projectId),
+  customData: json(),
+  deploymentUrl: varchar({ length: 500 }),
+  deploymentStatus: varchar({ length: 50 }),
+  deploymentPlatform: varchar({ length: 50 }),
+  createdOn: timestamp().defaultNow(),
+  updatedOn: timestamp().defaultNow(),
+});

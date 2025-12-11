@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
-import { SignInButton } from '@clerk/nextjs';
+import { SignInButton, SignOutButton, useUser } from '@clerk/nextjs';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isSignedIn } = useUser();
 
   return (
     <nav className="w-full px-4 sm:px-6 lg:px-8 py-4">
@@ -28,11 +29,31 @@ export default function Navbar() {
 
         {/* Right: CTA Button - Hidden on mobile, show hamburger instead */}
         <div className="flex items-center gap-4">
-          <SignInButton mode="modal" forceRedirectUrl={"/workspace"}>
-            <button className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800">
-              Get Started
-            </button>
-          </SignInButton>
+          {isSignedIn ? (
+            <>
+              <a
+                href="#projects"
+                className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Projects
+              </a>
+              <SignOutButton>
+                <button className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800">
+                  Logout
+                </button>
+              </SignOutButton>
+            </>
+          ) : (
+            <SignInButton mode="modal" forceRedirectUrl={"/workspace"}>
+              <button className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800">
+                Get Started
+              </button>
+            </SignInButton>
+          )}
 
           {/* Mobile menu button */}
           <button
@@ -53,11 +74,32 @@ export default function Navbar() {
           <a href="#contact" className="text-sm text-gray-700 hover:text-gray-900 transition-colors py-2">
             Contact us
           </a>
-          <SignInButton mode="modal" forceRedirectUrl={"/workspace"}>
-            <button className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800">
-              Get Started
-            </button>
-          </SignInButton>
+          {isSignedIn ? (
+            <>
+              <a
+                href="#projects"
+                className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800 text-center"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Projects
+              </a>
+              <SignOutButton>
+                <button className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800">
+                  Logout
+                </button>
+              </SignOutButton>
+            </>
+          ) : (
+            <SignInButton mode="modal" forceRedirectUrl={"/workspace"}>
+              <button className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800">
+                Get Started
+              </button>
+            </SignInButton>
+          )}
         </div>
       )}
     </nav>

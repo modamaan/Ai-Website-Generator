@@ -29,13 +29,15 @@ export default function Hero() {
     const messages = [{
       role: "user",
       content: prompt,
-    }]
+    }];
+
     try {
       const response = await axios.post('/api/projects', {
         projectId: projectId,
         frameId: frameId,
         messages: messages,
       });
+
       console.log('Project API Response:', response.data);
       toast.success('Project created successfully');
       router.push(`/playground/${projectId}?frameId=${frameId}`);
@@ -62,10 +64,10 @@ export default function Hero() {
   return (
     <section className="flex flex-col items-center justify-center pt-12 sm:pt-16 md:pt-20 pb-16 sm:pb-24 md:pb-32 px-4 sm:px-6 lg:px-8 text-center">
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black mb-3 sm:mb-4 max-w-4xl">
-        Create your next website in seconds.
+        Build Your Website with AI in Minutes
       </h1>
       <p className="text-base sm:text-lg md:text-xl text-zinc-500 mb-8 sm:mb-10 md:mb-12 max-w-2xl">
-        Generate, edit and explore designs with AI. Export to code.
+        Describe your website and let AI build it. Edit with powerful tools and deploy with one click to Vercel.
       </p>
 
       <div className="w-full max-w-2xl relative mb-6 sm:mb-8">
@@ -98,8 +100,8 @@ export default function Hero() {
             <button
               onClick={CreateNewProject}
               className={`p-2 sm:p-2.5 rounded-full transition-colors ${prompt.trim() && !loading
-                  ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
-                  : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
+                ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
+                : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
                 }`}
               disabled={!prompt.trim() || loading}
             >
