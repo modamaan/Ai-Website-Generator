@@ -101,9 +101,6 @@ const AppSidebar = () => {
                         </div>
                         <h2 className='text-base sm:text-lg font-bold leading-tight whitespace-nowrap'>Ai Website Builder</h2>
                     </div>
-                    <Button className='w-full text-sm sm:text-base'>
-                        <Plus className='w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2' /> Add New Project
-                    </Button>
                 </div>
             </SidebarHeader>
             <SidebarContent>

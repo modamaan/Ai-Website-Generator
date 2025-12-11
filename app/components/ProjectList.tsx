@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Loader2, FileText, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
+import { useUser } from '@clerk/nextjs';
 
 interface Frame {
     id: number;
@@ -27,10 +28,15 @@ export default function ProjectList() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const { isSignedIn, isLoaded } = useUser();
 
     useEffect(() => {
-        fetchProjects();
-    }, []);
+        if (isLoaded && isSignedIn) {
+            fetchProjects();
+        } else if (isLoaded && !isSignedIn) {
+            setLoading(false);
+        }
+    }, [isLoaded, isSignedIn]);
 
     const fetchProjects = async () => {
         try {

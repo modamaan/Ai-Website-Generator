@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
-import { SignInButton, SignOutButton, useUser } from '@clerk/nextjs';
+import { SignInButton, SignOutButton, useUser, UserButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,16 +32,19 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {isSignedIn ? (
             <>
-              <a
-                href="#projects"
+              <Link
+                href="/workspace"
                 className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
-                }}
               >
                 Projects
-              </a>
+              </Link>
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8"
+                  }
+                }}
+              />
               <SignOutButton>
                 <button className="hidden md:block px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors text-gray-800">
                   Logout
@@ -76,17 +80,22 @@ export default function Navbar() {
           </a>
           {isSignedIn ? (
             <>
-              <a
-                href="#projects"
+              <Link
+                href="/workspace"
                 className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800 text-center"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
-                  setMobileMenuOpen(false);
-                }}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Projects
-              </a>
+              </Link>
+              <div className="flex items-center justify-center py-2">
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-10 h-10"
+                    }
+                  }}
+                />
+              </div>
               <SignOutButton>
                 <button className="px-5 py-2 text-sm border border-gray-500 rounded-full hover:bg-gray-50 transition-colors w-full text-gray-800">
                   Logout
