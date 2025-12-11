@@ -8,6 +8,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import PortfolioForm from './PortfolioForm';
+
 // Icon mapping
 const iconMap = {
   LayoutDashboard,
@@ -21,6 +23,10 @@ export default function Hero() {
   const [loading, setLoading] = useState(false);
   const { isSignedIn, user } = useUser();
   const router = useRouter();
+
+  const handlePromptGenerated = (generatedPrompt: string) => {
+    setPrompt(generatedPrompt);
+  };
 
   const CreateNewProject = async () => {
     setLoading(true);
@@ -64,16 +70,18 @@ export default function Hero() {
   return (
     <section className="flex flex-col items-center justify-center pt-12 sm:pt-16 md:pt-20 pb-16 sm:pb-24 md:pb-32 px-4 sm:px-6 lg:px-8 text-center">
       <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black mb-3 sm:mb-4 max-w-4xl">
-        Build Your Website with AI in Minutes
+        Build Your Portfolio in Seconds
       </h1>
       <p className="text-base sm:text-lg md:text-xl text-zinc-500 mb-8 sm:mb-10 md:mb-12 max-w-2xl">
-        Describe your website and let AI build it. Edit with powerful tools and deploy with one click to Vercel.
+        Create a stunning professional portfolio with AI. Choose your style, customize, and deploy with one click.
       </p>
+
+      <PortfolioForm onPromptGenerated={handlePromptGenerated} />
 
       <div className="w-full max-w-2xl relative mb-6 sm:mb-8">
         <textarea
           className="w-full h-40 sm:h-48 md:h-56 p-4 sm:p-6 pr-12 sm:pr-16 pb-14 sm:pb-16 text-base sm:text-lg bg-zinc-50 rounded-2xl sm:rounded-3xl border-none resize-none focus:ring-2 focus:ring-zinc-200 focus:outline-none placeholder:text-zinc-400 text-zinc-800"
-          placeholder="Describe your page design"
+          placeholder="Describe your portfolio design (or use the quick setup above)"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={loading}

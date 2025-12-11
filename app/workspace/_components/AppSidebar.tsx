@@ -99,7 +99,7 @@ const AppSidebar = () => {
                                 <path d="M2 12L12 17L22 12" />
                             </svg>
                         </div>
-                        <h2 className='text-base sm:text-lg font-bold leading-tight whitespace-nowrap'>Ai Website Builder</h2>
+                        <h2 className='text-base sm:text-lg font-bold leading-tight whitespace-nowrap'>Portfolio Builder</h2>
                     </div>
                 </div>
             </SidebarHeader>

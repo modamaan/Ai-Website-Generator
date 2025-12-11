@@ -26,7 +26,6 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <Hero />
-      <ProjectList />
     </div>
   );
 }

@@ -126,52 +126,6 @@ const ChatSection = ({ messages, onClose, onSend, loading = false }: Props) => {
           )}
           <div ref={messagesEndRef} />
         </div>
-
-        {/* Footer Input */}
-        <div className='p-3 lg:p-4 border-t border-slate-200 bg-white/80 backdrop-blur-sm'>
-          {/* Quick Actions */}
-          <div className='flex gap-2 mb-2 lg:mb-3'>
-            <button
-              onClick={() => setShowImageUpload(true)}
-              className='flex items-center gap-1 lg:gap-1.5 px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors text-xs font-medium text-slate-700'
-            >
-              <Upload className='w-3 lg:w-3.5 h-3 lg:h-3.5' />
-              <span className='hidden sm:inline'>Upload</span>
-            </button>
-            <button
-              onClick={() => setShowImageGenerate(true)}
-              className='flex items-center gap-1 lg:gap-1.5 px-2 lg:px-3 py-1 lg:py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors text-xs font-medium text-slate-700'
-            >
-              <Wand2 className='w-3 lg:w-3.5 h-3 lg:h-3.5' />
-              <span className='hidden sm:inline'>Generate</span>
-            </button>
-          </div>
-
-          {/* Input Area */}
-          <div className='relative'>
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder='Describe what you want to build...'
-              disabled={loading}
-              className='w-full px-3 lg:px-4 py-2 lg:py-3 pr-11 lg:pr-12 rounded-xl border border-slate-300 focus:border-purple-400 focus:ring-2 focus:ring-purple-100 outline-none resize-none text-sm placeholder:text-slate-400 transition-all disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed'
-              rows={2}
-            />
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || loading}
-              className='absolute right-2 bottom-2 w-7 h-7 lg:w-8 lg:h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-slate-300 disabled:to-slate-300 flex items-center justify-center transition-all shadow-lg disabled:shadow-none disabled:cursor-not-allowed'
-            >
-              <Send className='w-3.5 h-3.5 lg:w-4 lg:h-4 text-white' />
-            </button>
-          </div>
-
-          {/* Footer Note */}
-          <p className='text-xs text-slate-400 mt-2 text-center hidden sm:block'>
-            Press Enter to send, Shift + Enter for new line
-          </p>
-        </div>
       </div>
 
       {/* Image Upload Modal */}

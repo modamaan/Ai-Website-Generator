@@ -1,22 +1,22 @@
 [
     {
-        "label": "Dashboard",
-        "prompt": "Create a modern dashboard with analytics cards, charts, and a sidebar navigation. Include metrics for user activity, revenue, and performance indicators.",
+        "label": "Software Engineer",
+        "prompt": "Create a modern portfolio for a Software Engineer. Include a hero section with name and title, about section, skills showcase with tech stack (React, Node.js, Python, etc.), 3-4 featured projects with descriptions, and contact section. Use a professional blue and white color scheme.",
         "icon": "LayoutDashboard"
     },
     {
-        "label": "SignUp Form",
-        "prompt": "Design a clean signup form with email, password, and confirm password fields. Include social login options and form validation.",
+        "label": "Designer Showcase",
+        "prompt": "Design a creative portfolio for a UI/UX Designer. Include a bold hero section, about me with design philosophy, skills section, project gallery with case studies showing design process, and contact form. Use vibrant colors and modern aesthetics.",
         "icon": "UserPlus"
     },
     {
-        "label": "Hero",
-        "prompt": "Create a hero section with a bold headline, compelling subheading, call-to-action button, and background image or gradient.",
+        "label": "Minimal Developer",
+        "prompt": "Create a minimal, clean portfolio for a Full Stack Developer. Focus on simplicity with a hero section, brief about, tech skills list, project cards with GitHub links, and contact info. Use monochrome or pastel color scheme.",
         "icon": "Home"
     },
     {
-        "label": "User Profile Card",
-        "prompt": "Design a user profile card showing avatar, name, bio, stats (followers, following, posts), and action buttons.",
+        "label": "Creative Portfolio",
+        "prompt": "Build a bold and creative portfolio for a Creative Professional. Include an eye-catching hero, storytelling about section, visual skills display, impressive project showcase with images, and social links. Use warm sunset or vibrant multi-color theme.",
         "icon": "User"
     }
 ]

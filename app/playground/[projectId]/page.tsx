@@ -215,6 +215,11 @@ const PlayGround = () => {
         }
 
         try {
+            // Build conversation history for context
+            const conversationHistory = skipAddingUserMessage
+                ? messages  // Use existing messages if skipping (initial load)
+                : [...messages, { role: 'user', content: message }]; // Add new message
+
             const response = await fetch('/api/ai-model', {
                 method: 'POST',
                 headers: {
@@ -226,10 +231,7 @@ const PlayGround = () => {
                             role: 'system',
                             content: getSystemPrompt(message)
                         },
-                        {
-                            role: 'user',
-                            content: message
-                        }
+                        ...conversationHistory  // Include full conversation history for context
                     ]
                 })
             })
