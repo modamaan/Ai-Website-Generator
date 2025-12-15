@@ -68,62 +68,79 @@ export default function Hero() {
   };
 
   return (
-    <section className="flex flex-col items-center justify-center pt-12 sm:pt-16 md:pt-20 pb-16 sm:pb-24 md:pb-32 px-4 sm:px-6 lg:px-8 text-center">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black mb-3 sm:mb-4 max-w-4xl">
-        Build Your Portfolio in Seconds
-      </h1>
-      <p className="text-base sm:text-lg md:text-xl text-zinc-500 mb-8 sm:mb-10 md:mb-12 max-w-2xl">
-        Create a stunning professional portfolio with AI. Choose your style, customize, and deploy with one click.
+    <section className="relative flex flex-col items-center justify-center pt-16 sm:pt-20 md:pt-24 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-accent/10 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-smart-blue/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-accent/5 rounded-full blur-3xl" />
+      </div>
+
+      {/* Main Heading with Gradient */}
+      <div className="mb-4 sm:mb-5">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-3 sm:mb-4 max-w-5xl">
+          <span className="text-gradient">Build Your Portfolio</span>
+          <br />
+          <span className="text-zinc-900">in Seconds</span>
+        </h1>
+      </div>
+      
+      <p className="text-lg sm:text-xl md:text-2xl text-zinc-600 mb-10 sm:mb-12 md:mb-14 max-w-3xl font-light leading-relaxed">
+        Create a stunning professional portfolio with AI. Choose your style,
+        <br className="hidden sm:block" />
+        customize, and deploy with one click.
       </p>
 
       <PortfolioForm onPromptGenerated={handlePromptGenerated} />
 
-      <div className="w-full max-w-2xl relative mb-6 sm:mb-8">
-        <textarea
-          className="w-full h-40 sm:h-48 md:h-56 p-4 sm:p-6 pr-12 sm:pr-16 pb-14 sm:pb-16 text-base sm:text-lg bg-zinc-50 rounded-2xl sm:rounded-3xl border-none resize-none focus:ring-2 focus:ring-zinc-200 focus:outline-none placeholder:text-zinc-400 text-zinc-800"
-          placeholder="Describe your portfolio design (or use the quick setup above)"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          disabled={loading}
-        />
-        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4">
-          <button className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
-            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-        </div>
-        <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4">
+      <div className="w-full max-w-3xl relative mb-8 sm:mb-10">
+        <div className="relative group">
+          <textarea
+            className="w-full h-44 sm:h-52 md:h-60 p-5 sm:p-7 pr-14 sm:pr-18 pb-16 sm:pb-18 text-base sm:text-lg bg-white rounded-2xl sm:rounded-3xl border-2 border-zinc-200 resize-none focus:ring-4 focus:ring-purple-accent/20 focus:border-purple-accent focus:outline-none placeholder:text-zinc-400 text-zinc-800 shadow-lg transition-all duration-300 group-hover:shadow-xl"
+            placeholder="Describe your portfolio design (or use the quick setup above)"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            disabled={loading}
+          />
+          <div className="absolute bottom-4 sm:bottom-5 left-4 sm:left-5">
+            <button className="p-2.5 text-zinc-400 hover:text-purple-accent transition-all duration-200 hover:scale-110 rounded-lg hover:bg-purple-50">
+              <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+          </div>
+          <div className="absolute bottom-4 sm:bottom-5 right-4 sm:right-5">
           {!isSignedIn ? (
             <SignInButton mode="modal">
               <button
-                className={`p-2 sm:p-2.5 rounded-full transition-colors ${prompt.trim()
-                  ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
-                  : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
+                className={`p-3 sm:p-3.5 rounded-full transition-all duration-300 transform ${prompt.trim()
+                  ? 'gradient-primary text-white hover:scale-110 hover:shadow-lg shadow-purple-500/50 cursor-pointer'
+                  : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
                   }`}
                 disabled={!prompt.trim()}
               >
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-5 h-5" />
               </button>
             </SignInButton>
           ) : (
             <button
               onClick={CreateNewProject}
-              className={`p-2 sm:p-2.5 rounded-full transition-colors ${prompt.trim() && !loading
-                ? 'bg-black text-white hover:bg-zinc-800 cursor-pointer'
-                : 'bg-zinc-300 text-zinc-500 cursor-not-allowed'
+              className={`p-3 sm:p-3.5 rounded-full transition-all duration-300 transform ${prompt.trim() && !loading
+                ? 'gradient-primary text-white hover:scale-110 hover:shadow-lg shadow-purple-500/50 cursor-pointer'
+                : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
                 }`}
               disabled={!prompt.trim() || loading}
             >
               {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-5 h-5" />
               )}
             </button>
           )}
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 max-w-3xl">
+      <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3 max-w-4xl">
         {suggestions.map((suggestion) => {
           const IconComponent = iconMap[suggestion.icon as keyof typeof iconMap];
           return (
@@ -144,7 +161,7 @@ export default function Hero() {
 function PresetButton({ icon, label, prompt, onClick }: { icon: React.ReactNode; label: string; prompt: string; onClick: () => void }) {
   return (
     <button
-      className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-zinc-600 bg-white border border-zinc-200 rounded-full hover:bg-zinc-50 transition-colors"
+      className="flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base font-medium text-zinc-700 bg-white border-2 border-zinc-200 rounded-full hover:border-purple-accent hover:text-purple-accent hover:shadow-md transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
       title={prompt}
       onClick={onClick}
     >

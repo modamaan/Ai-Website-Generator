@@ -23,7 +23,15 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30">
+      {/* Subtle dot pattern background */}
+      <div 
+        className="fixed inset-0 -z-10 opacity-[0.015]"
+        style={{
+          backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
+          backgroundSize: '24px 24px'
+        }}
+      />
       <Navbar />
       <Hero />
     </div>

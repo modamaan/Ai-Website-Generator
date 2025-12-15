@@ -84,23 +84,27 @@ Design requirements:
     const isFormComplete = profession && style && colorTheme;
 
     return (
-        <div className="w-full max-w-2xl mb-6 sm:mb-8">
-            <div className="bg-white rounded-2xl sm:rounded-3xl border border-zinc-200 p-4 sm:p-6 shadow-sm">
-                <h3 className="text-lg sm:text-xl font-semibold text-zinc-800 mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-500" />
-                    Quick Portfolio Setup
-                </h3>
+        <div className="w-full max-w-3xl mb-8 sm:mb-10">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-zinc-200 p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2.5 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl">
+                        <Sparkles className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-zinc-900">
+                        Quick Portfolio Setup
+                    </h3>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
                     {/* Profession Selector */}
                     <div>
-                        <label className="block text-sm font-medium text-zinc-700 mb-2">
+                        <label className="block text-sm font-semibold text-zinc-700 mb-2.5">
                             Your Profession
                         </label>
                         <select
                             value={profession}
                             onChange={(e) => setProfession(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 focus:ring-2 focus:ring-purple-200 focus:border-purple-300 focus:outline-none transition-all"
+                            className="w-full px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-xl text-zinc-800 font-medium focus:ring-4 focus:ring-purple-100 focus:border-purple-400 focus:outline-none transition-all hover:border-zinc-300 cursor-pointer"
                         >
                             <option value="">Select profession...</option>
                             {professions.map((prof) => (
@@ -113,13 +117,13 @@ Design requirements:
 
                     {/* Style Selector */}
                     <div>
-                        <label className="block text-sm font-medium text-zinc-700 mb-2">
+                        <label className="block text-sm font-semibold text-zinc-700 mb-2.5">
                             Design Style
                         </label>
                         <select
                             value={style}
                             onChange={(e) => setStyle(e.target.value)}
-                            className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 focus:ring-2 focus:ring-purple-200 focus:border-purple-300 focus:outline-none transition-all"
+                            className="w-full px-4 py-3.5 bg-zinc-50 border-2 border-zinc-200 rounded-xl text-zinc-800 font-medium focus:ring-4 focus:ring-purple-100 focus:border-purple-400 focus:outline-none transition-all hover:border-zinc-300 cursor-pointer"
                         >
                             <option value="">Select style...</option>
                             {styles.map((s) => (
@@ -132,27 +136,27 @@ Design requirements:
                 </div>
 
                 {/* Color Theme Selector */}
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-zinc-700 mb-3">
+                <div className="mb-6">
+                    <label className="block text-sm font-semibold text-zinc-700 mb-4">
                         Color Theme
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                         {colorThemes.map((theme) => (
                             <button
                                 key={theme.value}
                                 onClick={() => setColorTheme(theme.value)}
-                                className={`relative p-3 rounded-xl border-2 transition-all ${colorTheme === theme.value
-                                        ? 'border-purple-500 shadow-md'
-                                        : 'border-zinc-200 hover:border-zinc-300'
+                                className={`relative p-4 rounded-2xl border-2 transition-all duration-300 transform hover:scale-105 ${colorTheme === theme.value
+                                        ? 'border-purple-500 shadow-lg ring-4 ring-purple-100'
+                                        : 'border-zinc-200 hover:border-zinc-300 hover:shadow-md'
                                     }`}
                             >
-                                <div className={`w-full h-8 rounded-lg bg-gradient-to-r ${theme.gradient} mb-2`} />
-                                <p className="text-xs font-medium text-zinc-700 text-center">
+                                <div className={`w-full h-10 rounded-xl bg-gradient-to-r ${theme.gradient} mb-2.5 shadow-sm`} />
+                                <p className="text-xs font-semibold text-zinc-700 text-center">
                                     {theme.name}
                                 </p>
                                 {colorTheme === theme.value && (
-                                    <div className="absolute top-1 right-1 w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
-                                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
@@ -166,13 +170,13 @@ Design requirements:
                 <button
                     onClick={generatePrompt}
                     disabled={!isFormComplete}
-                    className={`w-full py-3 px-6 rounded-xl font-medium transition-all ${isFormComplete
-                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-md hover:shadow-lg'
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 transform ${isFormComplete
+                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
                             : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
                         }`}
                 >
-                    <span className="flex items-center justify-center gap-2">
-                        <Sparkles className="w-4 h-4" />
+                    <span className="flex items-center justify-center gap-2.5">
+                        <Sparkles className="w-5 h-5" />
                         Generate Portfolio Prompt
                     </span>
                 </button>

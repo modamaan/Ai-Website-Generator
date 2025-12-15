@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -68,7 +66,15 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
+  
+  /* Brand Colors */
+  --tech-blue: #1560BD;
+  --smart-blue: #2D68C4;
+  --purple-accent: #8B5CF6;
+  --pink-accent: #EC4899;
+  
+  /* Enhanced Theme */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -100,6 +106,21 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Custom Design Tokens */
+  --bg-subtle: #F9FAFB;
+  --text-muted: #A1A1AA;
+  --border-light: #E4E4E7;
+}
+
+@theme inline {
+  --color-tech-blue: var(--tech-blue);
+  --color-smart-blue: var(--smart-blue);
+  --color-purple-accent: var(--purple-accent);
+  --color-pink-accent: var(--pink-accent);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-text-muted: var(--text-muted);
+  --color-border-light: var(--border-light);
 }
 
 .dark {
@@ -143,4 +164,39 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom Utilities */
+@utility gradient-primary {
+  background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+}
+
+@utility gradient-vibrant {
+  background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #3B82F6 100%);
+}
+
+@utility glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@utility animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@utility animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility text-gradient {
+  background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
