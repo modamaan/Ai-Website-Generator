@@ -35,7 +35,9 @@ yarn-error.log*
 
 # vercel
 .vercel
-.kombai
+
+# kombai folders
+kombai
 
 # typescript
 *.tsbuildinfo
